@@ -1,8 +1,8 @@
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/airbnb/javascript?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-# Airbnb JavaScript Style Guide() {
+# Atomic JavaScript Style Guide() {
 
-*A mostly reasonable approach to JavaScript*
+*A mostly reasonable approach to JavaScript JSX Harmony*
 
 
 ## Table of Contents
@@ -50,8 +50,8 @@
     + `undefined`
 
     ```javascript
-    var foo = 1;
-    var bar = foo;
+    let foo = 1;
+    let bar = foo;
 
     bar = 9;
 
@@ -64,8 +64,8 @@
     + `function`
 
     ```javascript
-    var foo = [1, 2];
-    var bar = foo;
+    let foo = [1, 2];
+    let bar = foo;
 
     bar[0] = 9;
 
@@ -80,23 +80,23 @@
 
     ```javascript
     // bad
-    var item = new Object();
+    let item = new Object();
 
     // good
-    var item = {};
+    let item = {};
     ```
 
   - Don't use [reserved words](http://es5.github.io/#x7.6.1) as keys. It won't work in IE8. [More info](https://github.com/airbnb/javascript/issues/61)
 
     ```javascript
     // bad
-    var superman = {
+    let superman = {
       default: { clark: 'kent' },
       private: true
     };
 
     // good
-    var superman = {
+    let superman = {
       defaults: { clark: 'kent' },
       hidden: true
     };
@@ -106,17 +106,17 @@
 
     ```javascript
     // bad
-    var superman = {
+    let superman = {
       class: 'alien'
     };
 
     // bad
-    var superman = {
+    let superman = {
       klass: 'alien'
     };
 
     // good
-    var superman = {
+    let superman = {
       type: 'alien'
     };
     ```
@@ -129,17 +129,16 @@
 
     ```javascript
     // bad
-    var items = new Array();
+    let items = new Array();
 
     // good
-    var items = [];
+    let items = [];
     ```
 
   - If you don't know array length use Array#push.
 
     ```javascript
-    var someStack = [];
-
+    let someStack = [];
 
     // bad
     someStack[someStack.length] = 'abracadabra';
@@ -151,9 +150,9 @@
   - When you need to copy an array use Array#slice. [jsPerf](http://jsperf.com/converting-arguments-to-an-array/7)
 
     ```javascript
-    var len = items.length;
-    var itemsCopy = [];
-    var i;
+    let len = items.length;
+    let itemsCopy = [];
+    let i;
 
     // bad
     for (i = 0; i < len; i++) {
@@ -162,13 +161,16 @@
 
     // good
     itemsCopy = items.slice();
+
+    // good
+    itemsCopy = [...items];
     ```
 
-  - To convert an array-like object to an array, use Array#slice.
+  - To convert an array-like object to an array, use *Rest* syntax.
 
     ```javascript
-    function trigger() {
-      var args = Array.prototype.slice.call(arguments);
+    function trigger(x, ...y) {
+      // y is an Array
       ...
     }
     ```
@@ -194,8 +196,7 @@
     var fullName = 'Bob ' + this.lastName;
     ```
 
-  - Strings longer than 80 characters should be written across multiple lines using string concatenation.
-  - Note: If overused, long strings with concatenation could impact performance. [jsPerf](http://jsperf.com/ya-string-concat) & [Discussion](https://github.com/airbnb/javascript/issues/40)
+  - Strings longer than 80 characters should be written across multiple lines using a backtick.
 
     ```javascript
     // bad
@@ -207,19 +208,24 @@
     with this, you would get nowhere \
     fast.';
 
-    // good
+    // bad
     var errorMessage = 'This is a super long error that was thrown because ' +
       'of Batman. When you stop to think about how Batman had anything to do ' +
       'with this, you would get nowhere fast.';
+
+    // good
+    var errorMessage = `This is a super long error that was thrown because
+      of Batman. When you stop to think about how Batman had anything to do
+      with this, you would get nowhere fast.`;
     ```
 
   - When programmatically building up a string, use Array#join instead of string concatenation. Mostly for IE: [jsPerf](http://jsperf.com/string-vs-array-concat/2).
 
     ```javascript
-    var items;
-    var messages;
-    var length;
-    var i;
+    let items;
+    let messages;
+    let length;
+    let i;
 
     messages = [{
       state: 'success',
@@ -247,13 +253,9 @@
 
     // good
     function inbox(messages) {
-      items = [];
+      let items = messages.map((m) => m.message);
 
-      for (i = 0; i < length; i++) {
-        items[i] = messages[i].message;
-      }
-
-      return '<ul><li>' + items.join('</li><li>') + '</li></ul>';
+      return `<ul><li>${ items.join('</li><li>') }</li></ul>`;
     }
     ```
 
@@ -271,7 +273,7 @@
     };
 
     // named function expression
-    var named = function named() {
+    let named = function named() {
       return true;
     };
 
@@ -293,7 +295,7 @@
     }
 
     // good
-    var test;
+    let test;
     if (currentUser) {
       test = function test() {
         console.log('Yup.');
@@ -324,22 +326,22 @@
   - Use dot notation when accessing properties.
 
     ```javascript
-    var luke = {
+    let luke = {
       jedi: true,
       age: 28
     };
 
     // bad
-    var isJedi = luke['jedi'];
+    let isJedi = luke['jedi'];
 
     // good
-    var isJedi = luke.jedi;
+    let isJedi = luke.jedi;
     ```
 
   - Use subscript notation `[]` when accessing properties with a variable.
 
     ```javascript
-    var luke = {
+    let luke = {
       jedi: true,
       age: 28
     };
@@ -348,7 +350,19 @@
       return luke[prop];
     }
 
-    var isJedi = getProp('jedi');
+    let isJedi = getProp('jedi');
+    ```
+
+  - Use the Enhanced Object Literal syntax when defining computed properties.
+
+
+    ```javascript
+    let planet = 'hoth';
+
+    let luke = {
+      jedi: true,
+      [`${planet}_occupied`]: true
+    };
     ```
 
 **[⬆ back to top](#table-of-contents)**
@@ -356,60 +370,60 @@
 
 ## Variables
 
-  - Always use `var` to declare variables. Not doing so will result in global variables. We want to avoid polluting the global namespace. Captain Planet warned us of that.
+  - Always use `let` to declare block-scoped variables. Not doing so will result in global variables. We want to avoid polluting the global namespace. Captain Planet warned us of that.
 
     ```javascript
     // bad
     superPower = new SuperPower();
 
     // good
-    var superPower = new SuperPower();
+    let superPower = new SuperPower();
     ```
 
-  - Use one `var` declaration per variable.
+  - Use one `let` declaration per variable.
     It's easier to add new variable declarations this way, and you never have
     to worry about swapping out a `;` for a `,` or introducing punctuation-only
-    diffs. 
+    diffs.
 
     ```javascript
     // bad
-    var items = getItems(),
+    let items = getItems(),
         goSportsTeam = true,
         dragonball = 'z';
 
     // bad
     // (compare to above, and try to spot the mistake)
-    var items = getItems(),
+    let items = getItems(),
         goSportsTeam = true;
         dragonball = 'z';
 
     // good
-    var items = getItems();
-    var goSportsTeam = true;
-    var dragonball = 'z';
+    let items = getItems();
+    let goSportsTeam = true;
+    let dragonball = 'z';
     ```
 
   - Declare unassigned variables last. This is helpful when later on you might need to assign a variable depending on one of the previous assigned variables.
 
     ```javascript
     // bad
-    var i, len, dragonball,
+    let i, len, dragonball,
         items = getItems(),
         goSportsTeam = true;
 
     // bad
-    var i;
-    var items = getItems();
-    var dragonball;
-    var goSportsTeam = true;
-    var len;
+    let i;
+    let items = getItems();
+    let dragonball;
+    let goSportsTeam = true;
+    let len;
 
     // good
-    var items = getItems();
-    var goSportsTeam = true;
-    var dragonball;
-    var length;
-    var i;
+    let items = getItems();
+    let goSportsTeam = true;
+    let dragonball;
+    let length;
+    let i;
     ```
 
   - Assign variables at the top of their scope. This helps avoid issues with variable declaration and assignment hoisting related issues.
@@ -422,7 +436,7 @@
 
       //..other stuff..
 
-      var name = getName();
+      let name = getName();
 
       if (name === 'test') {
         return false;
@@ -433,7 +447,7 @@
 
     // good
     function() {
-      var name = getName();
+      let name = getName();
 
       test();
       console.log('doing stuff..');
@@ -449,7 +463,7 @@
 
     // bad
     function() {
-      var name = getName();
+      let name = getName();
 
       if (!arguments.length) {
         return false;
@@ -464,7 +478,7 @@
         return false;
       }
 
-      var name = getName();
+      let name = getName();
 
       return true;
     }
@@ -490,14 +504,14 @@
     // value of `true` is not hoisted.
     function example() {
       console.log(declaredButNotAssigned); // => undefined
-      var declaredButNotAssigned = true;
+      let declaredButNotAssigned = true;
     }
 
     // The interpreter is hoisting the variable
     // declaration to the top of the scope.
     // Which means our example could be rewritten as:
     function example() {
-      var declaredButNotAssigned;
+      let declaredButNotAssigned;
       console.log(declaredButNotAssigned); // => undefined
       declaredButNotAssigned = true;
     }
@@ -527,7 +541,7 @@
 
       superPower(); // => ReferenceError superPower is not defined
 
-      var named = function superPower() {
+      let named = function superPower() {
         console.log('Flying');
       };
     }
@@ -539,7 +553,7 @@
 
       named(); // => TypeError named is not a function
 
-      var named = function named() {
+      let named = function named() {
         console.log('named');
       }
     }
@@ -678,17 +692,17 @@
 
     ```javascript
     // bad
-    var active = true;  // is current tab
+    let active = true;  // is current tab
 
     // good
     // is current tab
-    var active = true;
+    let active = true;
 
     // bad
     function getType() {
       console.log('fetching type...');
       // set the default type to 'no type'
-      var type = this._type || 'no type';
+      let type = this._type || 'no type';
 
       return type;
     }
@@ -698,7 +712,7 @@
       console.log('fetching type...');
 
       // set the default type to 'no type'
-      var type = this._type || 'no type';
+      let type = this._type || 'no type';
 
       return type;
     }
@@ -728,7 +742,19 @@
 
       return this;
     }
-  ```
+    ```
+
+  - Use `// HACK:` to annotate a "less than ideal solution" which should be addressed in the future
+
+    ```javascript
+    function Calculator() {
+
+      // HACK: force this into global scope to fix crappy library
+      window.lib_config = {...};
+
+      return this;
+    }
+    ```
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -740,17 +766,17 @@
     ```javascript
     // bad
     function() {
-    ∙∙∙∙var name;
+    ∙∙∙∙let name;
     }
 
     // bad
     function() {
-    ∙var name;
+    ∙let name;
     }
 
     // good
     function() {
-    ∙∙var name;
+    ∙∙let name;
     }
     ```
 
@@ -784,10 +810,10 @@
 
     ```javascript
     // bad
-    var x=y+5;
+    let x=y+5;
 
     // good
-    var x = y + 5;
+    let x = y + 5;
     ```
 
   - End files with a single newline character.
@@ -829,13 +855,13 @@
         .updateCount();
 
     // bad
-    var leds = stage.selectAll('.led').data(data).enter().append('svg:svg').class('led', true)
+    let leds = stage.selectAll('.led').data(data).enter().append('svg:svg').class('led', true)
         .attr('width',  (radius + margin) * 2).append('svg:g')
         .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
         .call(tron.led);
 
     // good
-    var leds = stage.selectAll('.led')
+    let leds = stage.selectAll('.led')
         .data(data)
       .enter().append('svg:svg')
         .class('led', true)
@@ -853,21 +879,21 @@
 
     ```javascript
     // bad
-    var story = [
+    let story = [
         once
       , upon
       , aTime
     ];
 
     // good
-    var story = [
+    let story = [
       once,
       upon,
       aTime
     ];
 
     // bad
-    var hero = {
+    let hero = {
         firstName: 'Bob'
       , lastName: 'Parr'
       , heroName: 'Mr. Incredible'
@@ -875,7 +901,7 @@
     };
 
     // good
-    var hero = {
+    let hero = {
       firstName: 'Bob',
       lastName: 'Parr',
       heroName: 'Mr. Incredible',
@@ -889,23 +915,23 @@
 
     ```javascript
     // bad
-    var hero = {
+    let hero = {
       firstName: 'Kevin',
       lastName: 'Flynn',
     };
 
-    var heroes = [
+    let heroes = [
       'Batman',
       'Superman',
     ];
 
     // good
-    var hero = {
+    let hero = {
       firstName: 'Kevin',
       lastName: 'Flynn'
     };
 
-    var heroes = [
+    let heroes = [
       'Batman',
       'Superman'
     ];
@@ -921,19 +947,19 @@
     ```javascript
     // bad
     (function() {
-      var name = 'Skywalker'
+      let name = 'Skywalker'
       return name
     })()
 
     // good
     (function() {
-      var name = 'Skywalker';
+      let name = 'Skywalker';
       return name;
     })();
 
     // good (guards against the function becoming an argument when two files with IIFEs are concatenated)
     ;(function() {
-      var name = 'Skywalker';
+      let name = 'Skywalker';
       return name;
     })();
     ```
@@ -952,40 +978,40 @@
     //  => this.reviewScore = 9;
 
     // bad
-    var totalScore = this.reviewScore + '';
+    let totalScore = this.reviewScore + '';
 
     // good
-    var totalScore = '' + this.reviewScore;
+    let totalScore = '' + this.reviewScore;
 
     // bad
-    var totalScore = '' + this.reviewScore + ' total score';
+    let totalScore = '' + this.reviewScore + ' total score';
 
     // good
-    var totalScore = this.reviewScore + ' total score';
+    let totalScore = this.reviewScore + ' total score';
     ```
 
   - Use `parseInt` for Numbers and always with a radix for type casting.
 
     ```javascript
-    var inputValue = '4';
+    let inputValue = '4';
 
     // bad
-    var val = new Number(inputValue);
+    let val = new Number(inputValue);
+
+    // bad (or possibly l33t)
+    let val = +inputValue;
 
     // bad
-    var val = +inputValue;
+    let val = inputValue >> 0;
 
     // bad
-    var val = inputValue >> 0;
-
-    // bad
-    var val = parseInt(inputValue);
+    let val = parseInt(inputValue);
 
     // good
-    var val = Number(inputValue);
+    let val = Number(inputValue);
 
     // good
-    var val = parseInt(inputValue, 10);
+    let val = parseInt(inputValue, 10);
     ```
 
   - If for whatever reason you are doing something wild and `parseInt` is your bottleneck and need to use Bitshift for [performance reasons](http://jsperf.com/coercion-vs-casting/3), leave a comment explaining why and what you're doing.
@@ -997,7 +1023,7 @@
      * Bitshifting the String to coerce it to a
      * Number made it a lot faster.
      */
-    var val = inputValue >> 0;
+    let val = inputValue >> 0;
     ```
 
   - **Note:** Be careful when using bitshift operations. Numbers are represented as [64-bit values](http://es5.github.io/#x4.3.19), but Bitshift operations always return a 32-bit integer ([source](http://es5.github.io/#x11.7)). Bitshift can lead to unexpected behavior for integer values larger than 32 bits. [Discussion](https://github.com/airbnb/javascript/issues/109). Largest signed 32-bit Int is 2,147,483,647:
@@ -1011,16 +1037,16 @@
   - Booleans:
 
     ```javascript
-    var age = 0;
+    let age = 0;
 
     // bad
-    var hasAge = new Boolean(age);
+    let hasAge = new Boolean(age);
 
     // good
-    var hasAge = Boolean(age);
+    let hasAge = Boolean(age);
 
     // good
-    var hasAge = !!age;
+    let hasAge = !!age;
     ```
 
 **[⬆ back to top](#table-of-contents)**
@@ -1046,17 +1072,17 @@
 
     ```javascript
     // bad
-    var OBJEcttsssss = {};
-    var this_is_my_object = {};
+    let OBJEcttsssss = {};
+    let this_is_my_object = {};
     function c() {}
-    var u = new user({
+    let u = new user({
       name: 'Bob Parr'
     });
 
     // good
-    var thisIsMyObject = {};
+    let thisIsMyObject = {};
     function thisIsMyFunction() {}
-    var user = new User({
+    let user = new User({
       name: 'Bob Parr'
     });
     ```
@@ -1069,7 +1095,7 @@
       this.name = options.name;
     }
 
-    var bad = new user({
+    let bad = new user({
       name: 'nope'
     });
 
@@ -1078,7 +1104,7 @@
       this.name = options.name;
     }
 
-    var good = new User({
+    let good = new User({
       name: 'yup'
     });
     ```
@@ -1094,12 +1120,12 @@
     this._firstName = 'Panda';
     ```
 
-  - When saving a reference to `this` use `_this`.
+  - When saving a reference to `this` use `=>`.
 
     ```javascript
     // bad
     function() {
-      var self = this;
+      let self = this;
       return function() {
         console.log(self);
       };
@@ -1107,7 +1133,7 @@
 
     // bad
     function() {
-      var that = this;
+      let that = this;
       return function() {
         console.log(that);
       };
@@ -1115,8 +1141,7 @@
 
     // good
     function() {
-      var _this = this;
-      return function() {
+      return () => {
         console.log(_this);
       };
     }
@@ -1126,12 +1151,12 @@
 
     ```javascript
     // bad
-    var log = function(msg) {
+    let log = function(msg) {
       console.log(msg);
     };
 
     // good
-    var log = function log(msg) {
+    let log = function log(msg) {
       console.log(msg);
     };
     ```
@@ -1179,7 +1204,7 @@
     ```javascript
     function Jedi(options) {
       options || (options = {});
-      var lightsaber = options.lightsaber || 'blue';
+      let lightsaber = options.lightsaber || 'blue';
       this.set('lightsaber', lightsaber);
     }
 
@@ -1238,7 +1263,7 @@
       this.height = height;
     };
 
-    var luke = new Jedi();
+    let luke = new Jedi();
     luke.jump(); // => true
     luke.setHeight(20); // => undefined
 
@@ -1253,7 +1278,7 @@
       return this;
     };
 
-    var luke = new Jedi();
+    let luke = new Jedi();
 
     luke.jump()
       .setHeight(20);
@@ -1324,7 +1349,7 @@
     !function(global) {
       'use strict';
 
-      var previousFancyInput = global.FancyInput;
+      let previousFancyInput = global.FancyInput;
 
       function FancyInput(options) {
         this.options = options || {};
@@ -1348,10 +1373,10 @@
 
     ```javascript
     // bad
-    var sidebar = $('.sidebar');
+    let sidebar = $('.sidebar');
 
     // good
-    var $sidebar = $('.sidebar');
+    let $sidebar = $('.sidebar');
     ```
 
   - Cache jQuery lookups.
@@ -1370,7 +1395,7 @@
 
     // good
     function setSidebar() {
-      var $sidebar = $('.sidebar');
+      let $sidebar = $('.sidebar');
       $sidebar.hide();
 
       // ...stuff...
@@ -1407,6 +1432,13 @@
 ## ECMAScript 5 Compatibility
 
   - Refer to [Kangax](https://twitter.com/kangax/)'s ES5 [compatibility table](http://kangax.github.com/es5-compat-table/)
+
+**[⬆ back to top](#table-of-contents)**
+
+
+## ECMAScript 6 Compatibility
+
+  - Refer to [6to5](http://6to5.org/docs/learn-es6/) for available features.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -1462,7 +1494,7 @@
   - [Naming this in nested functions](https://gist.github.com/4135065) - Christian Johansen
   - [Conditional Callbacks](https://github.com/airbnb/javascript/issues/52) - Ross Allen
   - [Popular JavaScript Coding Conventions on Github](http://sideeffect.kr/popularconvention/#javascript) - JeongHoon Byun
-  - [Multiple var statements in JavaScript, not superfluous](http://benalman.com/news/2012/05/multiple-var-statements-javascript/) - Ben Alman
+  - [Multiple let statements in JavaScript, not superfluous](http://benalman.com/news/2012/05/multiple-var-statements-javascript/) - Ben Alman
 
 **Further Reading**
 
