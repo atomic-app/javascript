@@ -184,37 +184,37 @@
 
     ```javascript
     // bad
-    var name = "Bob Parr";
+    let name = "Bob Parr";
 
     // good
-    var name = 'Bob Parr';
+    let name = 'Bob Parr';
 
     // bad
-    var fullName = "Bob " + this.lastName;
+    let fullName = "Bob " + this.lastName;
 
     // good
-    var fullName = 'Bob ' + this.lastName;
+    let fullName = 'Bob ' + this.lastName;
     ```
 
   - Strings longer than 80 characters should be written across multiple lines using a backtick.
 
     ```javascript
     // bad
-    var errorMessage = 'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
+    let errorMessage = 'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
 
     // bad
-    var errorMessage = 'This is a super long error that was thrown because \
+    let errorMessage = 'This is a super long error that was thrown because \
     of Batman. When you stop to think about how Batman had anything to do \
     with this, you would get nowhere \
     fast.';
 
     // bad
-    var errorMessage = 'This is a super long error that was thrown because ' +
+    let errorMessage = 'This is a super long error that was thrown because ' +
       'of Batman. When you stop to think about how Batman had anything to do ' +
       'with this, you would get nowhere fast.';
 
     // good
-    var errorMessage = `This is a super long error that was thrown because
+    let errorMessage = `This is a super long error that was thrown because
       of Batman. When you stop to think about how Batman had anything to do
       with this, you would get nowhere fast.`;
     ```
@@ -268,7 +268,7 @@
 
     ```javascript
     // anonymous function expression
-    var anonymous = function() {
+    let anonymous = function() {
       return true;
     };
 
@@ -525,7 +525,7 @@
 
       anonymous(); // => TypeError anonymous is not a function
 
-      var anonymous = function() {
+      let anonymous = function() {
         console.log('anonymous function expression');
       };
     }
